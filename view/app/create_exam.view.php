@@ -129,36 +129,18 @@
 			<div class="col p-0 m-0 border-2 shadow">
 				<div class="container p-4">
 
-					<div class="lead fw-bold mb-2">Exam created</div>
-					<div class="row-4 m-0 shadow-sm">
-						<ol class="list-group list-group-numbered">
-							<li class="list-group-item d-flex justify-content-between align-items-start">
-								<div class="ms-2 me-auto">
-									<div class="fw-bold">Subheading</div>
-									Cras justo odio
-								</div>
-								<span class="badge bg-success rounded-pill">
-									<i class="bi bi-check-circle-fill"></i>
-								</span>
-							</li>
-							<li class="list-group-item d-flex justify-content-between align-items-start">
-								<div class="ms-2 me-auto">
-									<div class="fw-bold">Subheading</div>
-									Cras justo odio
-								</div>
-								<span class="badge bg-primary rounded-pill">
-									<i class="bi bi-arrow-repeat"></i>
-								</span>
-							</li>
-							<li class="list-group-item d-flex justify-content-between align-items-start">
-								<div class="ms-2 me-auto">
-									<div class="fw-bold">Subheading</div>
-									Cras justo odio
-								</div>
-								<span class="badge bg-primary rounded-pill">
-									<i class="bi bi-arrow-repeat"></i>
-								</span>
-							</li>
+					<div class="lead fw-bold mb-2 ">
+						<h3>Start an Examination</h3>
+						<div class="row m-0">
+							<div class="col">
+								<label for="exam_name">set exam name</label>
+								<input type="text" class="form-control" name="" id="exam_name" placeholder="set name">
+							</div>
+							<div class="col">
+								<label for="exam_time">set due date/time</label>
+								<input type="text" class="form-control" name="" id="exam_time" placeholder="set due date">
+							</div>
+						</div>
 					</div>
 					<!-- end of header -->
 
@@ -167,33 +149,38 @@
 
 						<h3>Set your questions</h3>
 
-						<form action="../../controller/create_exam.controller.php" method="post">
-							<div id="question_container">
-								<div class="each_question_wrapper border shadow-sm rounded p-2" id="inside_question_wrapper" data-q='1'>
-									<!-- question input -->
-									<input type="text" id="question" class="form-control" placeholder="write a question" name="question">
-									<!-- select option for answer options -->
-									<select name="selectOption" id="selectOption" class="form-select my-2 w-auto">
-										<option value="checkbox">checkbox</option>
-										<option value="radiobutton">radiobutton</option>
-										<option value="definition">definition</option>
-										<option value="essay">essay</option>
-									</select>
-									<!-- adding options -->
-									<div id="options" class="d-flex">
-										<input type="text" class="form-control" name="option" id="option" placeholder="option">
-										<div class="p-2" id="removeOption">
-											<i class="bi bi-dash-lg" style="pointer-events: none;"></i>
-										</div>
-										<div class="p-2" id="addOption">
-											<i class="bi bi-plus-lg" style="pointer-events: none;"></i>
-										</div>
+						<div id="question_container">
+							<div class="each_question_wrapper border shadow-sm rounded p-2" id="inside_question_wrapper" data-q='1'>
+								<!-- question input -->
+								<label for="question" class="fw-bold my-2">question</label>
+								<input type="text" id="question" class="form-control" placeholder="write a question" name="question">
+								<!-- select option for answer options -->
+								<select name="selectOption" id="selectOption" class="form-select my-2 w-auto">
+									<option value="checkbox">checkbox</option>
+									<option value="radiobutton">radiobutton</option>
+									<option value="definition">definition</option>
+									<option value="essay">essay</option>
+								</select>
+								<!-- adding options -->
+								<div id="options" class="d-flex">
+									<input type="text" class="form-control" name="option" id="option" placeholder="option">
+									<div class="p-2" id="removeOption">
+										<i class="bi bi-dash-lg" style="pointer-events: none;"></i>
 									</div>
-									<!-- end of option wrapper -->
+									<div class="p-2" id="addOption">
+										<i class="bi bi-plus-lg" style="pointer-events: none;"></i>
+									</div>
 								</div>
-
+								<!-- end of option wrapper -->
+								<!-- set the answer -->
+								<div class="my-2">
+									<h6 class="fw-bold">Answer</h6>
+									<input type="text" name="answer" placeholder="set the answer" class="form-control" />
+								</div>
+								<!-- end answer -->
 							</div>
-						</form>
+
+						</div>
 						<!-- end of exam questoinnaire -->
 
 						<!-- add question button -->
@@ -213,6 +200,7 @@
 				</div>
 			</div>
 		</div>
+	</div>
 	</div>
 	</div>
 

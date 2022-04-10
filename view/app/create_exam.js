@@ -11,6 +11,10 @@ submitBtn.addEventListener("click", () => {
     const select = document.querySelectorAll("#selectOption");
     const option = document.querySelectorAll("#option");
 
+    if (quest[0].value == "") {
+        alert("Please input question and options before submitting");
+        return;
+    }
     // order the questions and its options
     quest.forEach((el, id) => {
         // question order
@@ -18,14 +22,17 @@ submitBtn.addEventListener("click", () => {
             // get options
             const options = [];
             option.forEach((el) => {
-                if (parseInt(el.parentElement.parentElement.dataset.q) === 1) {
+                if (
+                    parseInt(el.parentElement.parentElement.dataset.q) ===
+                    id + 1
+                ) {
                     options.push(el.value);
                 }
             });
             // get selection value
             let selected = "";
             select.forEach((el) => {
-                if (parseInt(el.parentElement.dataset.q) === 1) {
+                if (parseInt(el.parentElement.dataset.q) === id + 1) {
                     selected = el.value;
                 }
             });
@@ -37,18 +44,28 @@ submitBtn.addEventListener("click", () => {
         }
     });
 
-    console.log(JSON.stringify([...data]));
     // submit to the server
-    fetch("../../controller/create_exam.controller.php", {
-        method: "POST",
-        data: data,
-    })
-        .then((data) => data.json())
-        .then((res) => console.log(res))
-        .catch((err) => console.error(err));
+    const form = document.createElement("form");
+    const input = document.createElement("input");
+    const btnSubmit = document.createElement("input");
 
-    // redirect to the server
-    // window.location.href = "../../controller/create_exam.controller.php";
+    form.action = "../../controller/create_exam.controller.php";
+    form.method = "POST";
+
+    input.type = "hidden";
+    input.name = "data";
+    input.value = JSON.stringify(data);
+
+    btnSubmit.type = "submit";
+    btnSubmit.style.opacity = "0";
+
+    form.appendChild(input);
+    form.appendChild(btnSubmit);
+    //submit
+
+    document.body.appendChild(form);
+
+    btnSubmit.click();
 });
 
 // add question
@@ -66,6 +83,11 @@ addQuestionBtn.addEventListener("click", (e) => {
     count = theParent.dataset.q =
         parseInt(localStorage.getItem("questionCount")) + 1;
     localStorage.setItem("questionCount", String(count));
+
+    const questionLabel = document.createElement("label");
+    questionLabel.for = "question";
+    questionLabel.classList = "fw-bold";
+    questionLabel.innerHTML = "question";
 
     const questionInput = document.createElement("input");
     questionInput.classList = "form-control";
@@ -120,14 +142,17 @@ addQuestionBtn.addEventListener("click", (e) => {
     const removeIcon = document.createElement("i");
 
     addIcon.classList = "bi bi-plus-lg";
+    addIcon.style.pointerEvents = "none";
     removeIcon.classList = "bi bi-dash-lg";
+    removeIcon.style.pointerEvents = "none";
 
     removeWrapper.appendChild(removeIcon);
     addWrapper.appendChild(addIcon);
 
     // event for add and remove option
     addWrapper.addEventListener("click", (e) => {
-        addOptionElements(e.target.parentElement);
+        console.log(e.target);
+        addOptionElements(e.target);
     });
 
     removeWrapper.addEventListener("click", (e) => {
@@ -140,6 +165,7 @@ addQuestionBtn.addEventListener("click", (e) => {
     optionWrapper.appendChild(removeWrapper);
     optionWrapper.appendChild(addWrapper);
 
+    theParent.appendChild(questionLabel);
     theParent.appendChild(questionInput);
     theParent.appendChild(selectOptions);
     theParent.appendChild(optionWrapper);
