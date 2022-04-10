@@ -1,0 +1,28 @@
+:root {
+    --primary-color: #fff;
+    --secondary-color: #2ecc70;
+    --tersiary-color: #2aabb2;
+    --tersiary-light: #65ddf8;
+    --green: #00dbba;
+    --grayish: #e4f4f5;
+    --gray: #dceced;
+    --list-table: #e6f6f7;
+    --darken-secondary-color: #27ae60;
+    --primary-gradient-cb: rgb(0, 199, 229);
+    --primary-gradient: linear-gradient(
+        360deg,
+        rgba(0, 234, 196, 1) 0%,
+        rgba(0, 199, 229, 1) 100%
+    );
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}

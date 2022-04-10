@@ -1,0 +1,39 @@
+.hidden_signup_btn {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.btn.login_submit {
+    background-color: var(--darken-secondary-color) !important;
+    color: white;
+}
+
+.btn.login_submit:hover {
+    background-color: var(--secondary-color) !important;
+}
+
+.btn.create_btn:hover {
+    color: var(--darken-secondary-color) !important;
+}
+
+.logo {
+    color: var(--darken-secondary-color) !important;
+}
+
+.btn.social_media:hover {
+    color: var(--darken-secondary-color) !important;
+}
+
+.btn.signup_btn {
+    background-color: var(--darken-secondary-color) !important;
+    color: white;
+}
+
+.btn.signup_btn:hover {
+    background-color: var(--secondary-color) !important;
+}
+
+.container.login_body {
+    background-color: var(--grayish) !important;
+}

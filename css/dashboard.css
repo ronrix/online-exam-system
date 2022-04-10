@@ -1,0 +1,42 @@
+.nav-link.active {
+    background-color: var(--green) !important;
+    border-color: var(--green) !important;
+    border-radius: 40px !important;
+}
+.nav-item {
+    color: white !important;
+}
+
+.nav-item.side_bar:hover {
+    background-color: var(--green) !important;
+    border-color: var(--green) !important;
+    border-radius: 40px;
+}
+
+.nav-item.active {
+    background-color: var(--green) !important;
+    border-color: var(--green) !important;
+    border-radius: 40px;
+}
+
+.btn.logout_btn {
+    border: none !important;
+    background-color: transparent !important;
+    color: white !important;
+}
+
+.btn.logout_btn:hover {
+    color: var(--green) !important;
+}
+
+.list-group-item.examinee {
+    cursor: pointer !important;
+}
+
+.list-group-item.list {
+    background-color: var(--list-table) !important;
+}
+
+.btn.view {
+    background: var(--green) !important;
+}
