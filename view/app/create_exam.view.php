@@ -103,7 +103,7 @@
 								<li class="nav-item ">
 									<a class="nav-link fs-6 " href="./exam_results.view.php">
 										<i class="bi bi-view-list"></i>
-										Exam Lists</a>
+										Exam </a>
 								</li>
 								<li class="nav-item ">
 									<a class="nav-link" href="./settings.view.php">
@@ -138,7 +138,7 @@
 							</div>
 							<div class="col">
 								<label for="exam_time">set due date/time</label>
-								<input type="text" class="form-control" name="" id="exam_time" placeholder="set due date">
+								<input type="datetime-local" class="form-control" name="" id="exam_time" placeholder="set due date">
 							</div>
 						</div>
 					</div>
@@ -175,7 +175,7 @@
 								<!-- set the answer -->
 								<div class="my-2">
 									<h6 class="fw-bold">Answer</h6>
-									<input type="text" name="answer" placeholder="set the answer" class="form-control" />
+									<input type="text" name="answer" placeholder="set the answer" class="form-control" id="answer" />
 								</div>
 								<!-- end answer -->
 							</div>

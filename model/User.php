@@ -64,3 +64,35 @@
         }
         return 1;
     }
+
+    # insert exam details 
+    function insertExamDetails($conn, $data) {
+
+        $participants = 0;
+        $dateTimeNow = date("d-m-y h:i:s");
+        $serverLink = "http://localhost/OnlineExamApp/controller/";
+        try {
+            $stmt = $conn->prepare("INSERT INTO exam(examName, participants, startTime, endTime, serverLink) VALUES(?,?,?,?,?)");
+            $stmt->bind_param('sisss', $data['exam_name'], $participants, $dateTimeNow, $data['exam_time'], $serverLink);
+            $stmt->execute();
+        } catch (Exception $e) {
+            echo "Something went wrong!". $e->getMessage() . $e;
+            die();
+        }
+        return mysqli_insert_id($conn);
+    }
+
+    # insert exam questions
+    function insertExamQuestions($conn, $data, $examId) {
+        $newData = json_encode($data);
+        try {
+            $stmt = $conn->prepare("INSERT INTO examq(examId, q_json) VALUES(?,?)");
+            $stmt->bind_param('is', $examId, $newData);
+            $stmt->execute();
+            
+            echo "<br>done!";
+        }catch(Exception $e) {
+            echo "Something went wrong! ". $e->getMessage() . $e;
+            return 0;
+        }
+    }

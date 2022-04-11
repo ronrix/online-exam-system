@@ -95,7 +95,7 @@
 								<li class="nav-item ">
 									<a class="nav-link fs-6 " href="./exam_results.view.php">
 										<i class="bi bi-view-list"></i>
-										Exam Lists</a>
+										Exam</a>
 								</li>
 								<li class="nav-item ">
 									<a class="nav-link fs-6 active " href="./settings.view.php">

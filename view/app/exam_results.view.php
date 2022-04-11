@@ -59,7 +59,7 @@
 
 </head>
 
-<body style="">
+<body>
 
 	<div class="container-xxl p-0">
 		<div class="row p-0 m-0">
@@ -95,7 +95,7 @@
 								<li class="nav-item ">
 									<a class="nav-link fs-6 active " href="./exam_results.view.php">
 										<i class="bi bi-view-list"></i>
-										Exam Lists</a>
+										Exam</a>
 								</li>
 								<li class="nav-item ">
 									<a class="nav-link" href="./settings.view.php">

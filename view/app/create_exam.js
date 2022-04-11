@@ -1,3 +1,8 @@
+// prevent the page from leaving while the exam was not submitted yert
+window.onbeforeunload = function () {
+    return "Are you sure you want to navigate away?";
+};
+
 // set question count for the local storage
 localStorage.setItem("questionCount", "1");
 
@@ -10,6 +15,7 @@ submitBtn.addEventListener("click", () => {
     const quest = document.querySelectorAll("#question");
     const select = document.querySelectorAll("#selectOption");
     const option = document.querySelectorAll("#option");
+    const answer = document.querySelectorAll("#answer");
 
     if (quest[0].value == "") {
         alert("Please input question and options before submitting");
@@ -36,17 +42,34 @@ submitBtn.addEventListener("click", () => {
                     selected = el.value;
                 }
             });
+            // get the answer for this question
+            let newAnswer = "";
+            answer.forEach((el) => {
+                if (
+                    parseInt(el.parentElement.parentElement.dataset.q) ===
+                    id + 1
+                ) {
+                    newAnswer = el.value;
+                }
+            });
+
             data.push({
                 q: el.value,
                 options: options,
                 select: selected,
+                answer: newAnswer,
             });
         }
     });
 
+    // exam details
+    const examName = document.querySelector("#exam_name").value;
+    const examTime = document.querySelector("#exam_time").value;
+
     // submit to the server
     const form = document.createElement("form");
     const input = document.createElement("input");
+    const examDetailsInput = document.createElement("input");
     const btnSubmit = document.createElement("input");
 
     form.action = "../../controller/create_exam.controller.php";
@@ -54,18 +77,26 @@ submitBtn.addEventListener("click", () => {
 
     input.type = "hidden";
     input.name = "data";
+    examDetailsInput.type = "hidden";
+    examDetailsInput.name = "exam_details";
     input.value = JSON.stringify(data);
+    const examData = [{ exam_name: examName, exam_time: examTime }];
+    examDetailsInput.value = JSON.stringify(examData);
 
     btnSubmit.type = "submit";
     btnSubmit.style.opacity = "0";
 
     form.appendChild(input);
+    form.appendChild(examDetailsInput);
     form.appendChild(btnSubmit);
-    //submit
 
     document.body.appendChild(form);
-
+    //submit
     btnSubmit.click();
+
+    window.onbeforeunload = (e) => {
+        return null;
+    };
 });
 
 // add question
@@ -159,6 +190,22 @@ addQuestionBtn.addEventListener("click", (e) => {
         e.target.parentNode.parentNode.removeChild(e.target.parentNode);
     });
 
+    // answer element
+    const answerDiv = document.createElement("div");
+    const answerLabel = document.createElement("h6");
+    const answerInput = document.createElement("input");
+
+    answerDiv.classList = "my-2";
+    answerLabel.classList = "fw-bold";
+    answerLabel.innerHTML = "Answer";
+    answerInput.classList = "form-control";
+    answerInput.type = "text";
+    answerInput.id = "answer";
+    answerInput.name = "answer";
+    answerInput.placeholder = "set the answer";
+
+    answerDiv.appendChild(answerLabel);
+    answerDiv.appendChild(answerInput);
     // append
 
     optionWrapper.appendChild(firstOption);
@@ -169,6 +216,7 @@ addQuestionBtn.addEventListener("click", (e) => {
     theParent.appendChild(questionInput);
     theParent.appendChild(selectOptions);
     theParent.appendChild(optionWrapper);
+    theParent.appendChild(answerDiv);
 
     questionContainer.appendChild(theParent);
 });
@@ -241,6 +289,9 @@ function addOptionElements(el) {
     });
 
     // add to the parent question
-    el.parentElement.parentElement.appendChild(optionWrapper);
+    el.parentElement.parentNode.insertBefore(
+        optionWrapper,
+        el.parentElement.parentElement.lastElementChild
+    );
 }
 // end option function
