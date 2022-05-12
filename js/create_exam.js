@@ -17,38 +17,37 @@ submitBtn.addEventListener("click", () => {
     const option = document.querySelectorAll("#option");
     const answer = document.querySelectorAll("#answer");
 
-    if (quest[0].value == "") {
+    let preventFrom = 0;
+    quest.forEach(el => {
+        if (el.value == "") preventFrom = 1;
+    });
+    if (preventFrom) {
         alert("Please input question and options before submitting");
         return;
     }
+
     // order the questions and its options
     quest.forEach((el, id) => {
         // question order
         if (parseInt(el.parentElement.dataset.q) === id + 1) {
             // get options
             const options = [];
-            option.forEach((el) => {
-                if (
-                    parseInt(el.parentElement.parentElement.dataset.q) ===
-                    id + 1
-                ) {
+            option.forEach(el => {
+                if (parseInt(el.parentElement.parentElement.dataset.q) === id + 1) {
                     options.push(el.value);
                 }
             });
             // get selection value
             let selected = "";
-            select.forEach((el) => {
+            select.forEach(el => {
                 if (parseInt(el.parentElement.dataset.q) === id + 1) {
                     selected = el.value;
                 }
             });
             // get the answer for this question
             let newAnswer = "";
-            answer.forEach((el) => {
-                if (
-                    parseInt(el.parentElement.parentElement.dataset.q) ===
-                    id + 1
-                ) {
+            answer.forEach(el => {
+                if (parseInt(el.parentElement.parentElement.dataset.q) === id + 1) {
                     newAnswer = el.value;
                 }
             });
@@ -57,7 +56,7 @@ submitBtn.addEventListener("click", () => {
                 q: el.value,
                 options: options,
                 select: selected,
-                answer: newAnswer,
+                answer: newAnswer
             });
         }
     });
@@ -65,54 +64,38 @@ submitBtn.addEventListener("click", () => {
     // exam details
     const examName = document.querySelector("#exam_name").value;
     const examTime = document.querySelector("#exam_time").value;
+    const participants = document.querySelector("#participants").value;
 
-    // submit to the server
-    const form = document.createElement("form");
-    const input = document.createElement("input");
-    const examDetailsInput = document.createElement("input");
-    const btnSubmit = document.createElement("input");
+    console.log(data);
 
-    form.action = "../../controller/create_exam.controller.php";
-    form.method = "POST";
-
-    input.type = "hidden";
-    input.name = "data";
-    examDetailsInput.type = "hidden";
-    examDetailsInput.name = "exam_details";
-    input.value = JSON.stringify(data);
-    const examData = [{ exam_name: examName, exam_time: examTime }];
-    examDetailsInput.value = JSON.stringify(examData);
-
-    btnSubmit.type = "submit";
-    btnSubmit.style.opacity = "0";
-
-    form.appendChild(input);
-    form.appendChild(examDetailsInput);
-    form.appendChild(btnSubmit);
-
-    document.body.appendChild(form);
-    //submit
-    btnSubmit.click();
-
-    window.onbeforeunload = (e) => {
-        return null;
-    };
+    fetch("http://localhost/OnlineExamApp/controller/create_exam.controller.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify({ data, examName, exam_time: examTime, participants })
+    })
+        .then(data => data.json())
+        .then(res => {
+            if (res.status == "SUCCESS") {
+                alert("SUCCESS!");
+            }
+        });
 });
 
 // add question
 const addQuestionBtn = document.querySelector("#addQuestionBtn");
 const questionContainer = document.querySelector("#question_container");
 
-addQuestionBtn.addEventListener("click", (e) => {
+addQuestionBtn.addEventListener("click", e => {
     const theParent = document.createElement("div");
-    theParent.classList =
-        "each_question_wrapper border shadow-sm rounded p-2 mt-2";
+    theParent.classList = "each_question_wrapper border shadow-sm rounded p-2 mt-2";
     theParent.id = "inside_question_wrapper";
 
     // update question count
     let count = 0;
-    count = theParent.dataset.q =
-        parseInt(localStorage.getItem("questionCount")) + 1;
+    count = theParent.dataset.q = parseInt(localStorage.getItem("questionCount")) + 1;
     localStorage.setItem("questionCount", String(count));
 
     const questionLabel = document.createElement("label");
@@ -120,10 +103,9 @@ addQuestionBtn.addEventListener("click", (e) => {
     questionLabel.classList = "fw-bold";
     questionLabel.innerHTML = "question";
 
-    const questionInput = document.createElement("input");
+    const questionInput = document.createElement("textarea");
     questionInput.classList = "form-control";
     questionInput.placeholder = "write a question";
-    questionInput.type = "text";
     questionInput.name = "question";
     questionInput.id = "question";
 
@@ -181,12 +163,15 @@ addQuestionBtn.addEventListener("click", (e) => {
     addWrapper.appendChild(addIcon);
 
     // event for add and remove option
-    addWrapper.addEventListener("click", (e) => {
-        console.log(e.target);
+    addWrapper.addEventListener("click", e => {
         addOptionElements(e.target);
     });
 
-    removeWrapper.addEventListener("click", (e) => {
+    removeWrapper.addEventListener("click", e => {
+        if (e.target.parentElement.parentElement.children.length <= 5) {
+            console.log("don't remove this first option");
+            return;
+        }
         e.target.parentNode.parentNode.removeChild(e.target.parentNode);
     });
 
@@ -219,22 +204,41 @@ addQuestionBtn.addEventListener("click", (e) => {
     theParent.appendChild(answerDiv);
 
     questionContainer.appendChild(theParent);
+
+    // each question if > 1 put delete button
+    const inside_q = document.querySelectorAll("#inside_question_wrapper");
+
+    if (inside_q.length > 1) {
+        inside_q.forEach(el => {
+            el.classList.add("position-relative");
+
+            const cancelBtn = document.createElement("i");
+            cancelBtn.classList = "bi bi-x-lg position-absolute fs-4 end-0 top-0";
+
+            cancelBtn.addEventListener("click", e => {
+                if (questionContainer.children.length < 2) {
+                    return;
+                }
+                questionContainer.removeChild(e.target.parentElement);
+            });
+
+            el.appendChild(cancelBtn);
+        });
+    }
 });
 
 // add option
-const insideQuestionWrapper = document.querySelector(
-    "#inside_question_wrapper"
-);
+const insideQuestionWrapper = document.querySelector("#inside_question_wrapper");
 const addOption = document.querySelector("#addOption");
 const removeOption = document.querySelector("#removeOption");
 
-addOption.addEventListener("click", (e) => {
+addOption.addEventListener("click", e => {
     addOptionElements(e.target);
 });
 
-removeOption.addEventListener("click", (e) => {
+removeOption.addEventListener("click", e => {
     // check if there's only one option, if there is don't remove it
-    if (e.target.parentElement.parentElement.children.length <= 3) {
+    if (e.target.parentElement.parentElement.children.length <= 5) {
         console.log("don't remove this first option");
         return;
     }
@@ -280,18 +284,21 @@ function addOptionElements(el) {
     optionWrapper.appendChild(addWrapper);
 
     // add event listener for add and remove option
-    addWrapper.addEventListener("click", (e) => {
+    addWrapper.addEventListener("click", e => {
         addOptionElements(e.target);
     });
 
-    removeWrapper.addEventListener("click", (e) => {
+    removeWrapper.addEventListener("click", e => {
+        console.log(e.target.parentElement.parentElement.children.length);
+        if (e.target.parentElement.parentElement.children.length <= 5) {
+            console.log("don't remove this first option");
+            return;
+        }
+
         e.target.parentNode.parentNode.removeChild(e.target.parentNode);
     });
 
     // add to the parent question
-    el.parentElement.parentNode.insertBefore(
-        optionWrapper,
-        el.parentElement.parentElement.lastElementChild
-    );
+    el.parentElement.parentNode.insertBefore(optionWrapper, el.parentElement.parentElement.lastElementChild);
 }
 // end option function

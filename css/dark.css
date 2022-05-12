@@ -1,0 +1,41 @@
+/* dark mode */
+
+body.dark {
+    --primary-color: #141414 !important;
+    --secondary-color: #2a3f33 !important;
+    --tersiary-color: #334b4d !important;
+    --tersiary-light: #24373b !important;
+    --green: #193b36 !important;
+    --grayish: #1a2829 !important;
+    --gray: #545e5f !important;
+    --list-table: #263031 !important;
+    --darken-secondary-color: #0a2c18 !important;
+    --primary-gradient-cb: #09262b !important;
+    --primary-gradient: linear-gradient(360deg, rgba(0, 234, 196, 1) 0%, rgba(0, 199, 229, 1) 100%);
+
+    background-color: var(--primary-color) !important;
+    color: #fff !important;
+}
+
+.btn.dark {
+    color: #fff !important;
+}
+
+.nav-item .nav-link.dark {
+    color: #fff !important;
+}
+
+h2.dark {
+    color: #fff !important;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}

@@ -91,6 +91,10 @@
 		</div>
 	</footer>
 
+	<script>
+	document.querySelector('#focusEl').focus()
+	</script>
+
 </body>
 
 </html>

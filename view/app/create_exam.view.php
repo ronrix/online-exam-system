@@ -45,7 +45,15 @@
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
 
 
-	<link rel="stylesheet" href="../../css/colors.css">
+	<link rel="stylesheet" href="" id="modek">
+	<script>
+	const link = document.querySelector('#modek')
+	if (localStorage.getItem('dark')) {
+		link.href = "../../css/dark.css"
+	} else {
+		link.href = "../../css/colors.css"
+	}
+	</script>
 	<link rel="stylesheet" href="../../css/dashboard.css">
 
 	<style>
@@ -61,6 +69,7 @@
 		background-color: var(--primary-color) !important;
 		overflow-x: hidden !important;
 		position: relative;
+		height: 100vh !important;
 	}
 	</style>
 
@@ -78,17 +87,15 @@
 					<div class="container-fluid align-self-start align-items-center justify-content-center p-0 text-center">
 
 						<!-- burger menu -->
-						<button class="navbar-toggler w-sm-25 w-md-100" type="button" data-bs-toggle="collapse"
+						<button class="navbar-toggler w-sm-25 w-md-100 bg-light" type="button" data-bs-toggle="collapse"
 							data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
 							aria-label="Toggle navigation">
 							<span class="navbar-toggler-icon"></span>
 						</button>
 						<!-- end of burger menu -->
-
-						<div class="collapse navbar-collapse p-0 flex-column" id="navbarTogglerDemo01">
-							<img src="../../config/sample-user.jpg" alt="profile picture" class="w-50 m-auto d-none d-md-block"
-								style="clip-path: circle(40%);">
-							<ul class="navbar-nav m-auto mt-4 mb-lg-0 fw-bold w-100 h-sm-100 flex-column px-md-5 px-sm-0">
+						<div class="collapse navbar-collapse p-0 flex-column align-items-center justify-content-center"
+							id="navbarTogglerDemo01" style="height: 100vh;">
+							<ul class="navbar-nav m-auto mt-4 mb-lg-0 w-100 h-sm-100 flex-column px-md-5 px-sm-0">
 								<li class="nav-item">
 									<a class="nav-link fs-sm-6" aria-current="page" href="../">
 										<i class="bi bi-house-door-fill "></i>
@@ -96,14 +103,14 @@
 									</a>
 								</li>
 								<li class="nav-item ">
-									<a class="nav-link fs-6 active " aria-current="page" href="./create_exam.view.php">
+									<a class="nav-link fs-6 active fw-bold" aria-current="page" href="./create_exam.view.php">
 										<i class="bi bi-plus-square-fill"></i>
 										Create Exam</a>
 								</li>
 								<li class="nav-item ">
 									<a class="nav-link fs-6 " href="./exam_results.view.php">
 										<i class="bi bi-view-list"></i>
-										Exam </a>
+										Manage Exam </a>
 								</li>
 								<li class="nav-item ">
 									<a class="nav-link" href="./settings.view.php">
@@ -112,10 +119,10 @@
 									</a>
 								</li>
 								<li class="nav-item">
-									<form action="<?php echo $_SERVER['php_self'] ?>" method="post">
+									<form action="./create_exam.view.php" method="post">
 										<button name="logout" class="btn m-0 fs-6" type="submit">
 											<i class="bi bi-box-arrow-left"></i>
-											logout</button>
+											Logout</button>
 									</form>
 								</li>
 							</ul>
@@ -126,19 +133,24 @@
 			<!-- end of navbar -->
 
 			<!-- header (list of exam created) -->
-			<div class="col p-0 m-0 border-2 shadow">
+			<div class="col p-0 m-0 border-2" style="box-shadow: -4px 0 10px rgba(0, 0, 0, .125);">
 				<div class="container p-4">
 
 					<div class="lead fw-bold mb-2 ">
-						<h3>Start an Examination</h3>
-						<div class="row m-0">
+						<h5 class="fw-bold">Start an Examination</h5>
+						<div class="row m-0 d-flex align-items-center flex-sm-column flex-lg-row">
 							<div class="col">
-								<label for="exam_name">set exam name</label>
+								<label for="exam_name" style="font-size: 14px;">set exam name</label>
 								<input type="text" class="form-control" name="" id="exam_name" placeholder="set name">
 							</div>
 							<div class="col">
-								<label for="exam_time">set due date/time</label>
-								<input type="datetime-local" class="form-control" name="" id="exam_time" placeholder="set due date">
+								<label for="exam_time" style="font-size: 14px;">set due date/time</label>
+								<input type="datetime-local" class="form-control" name="" id="exam_time">
+							</div>
+
+							<div class="col">
+								<label for="exam_time" style="font-size: 14px;">set participants</label>
+								<input type="text" class="form-control" name="" id="participants" placeholder="number of participants">
 							</div>
 						</div>
 					</div>
@@ -147,13 +159,13 @@
 					<!-- exam questionnaire adding page -->
 					<div class="row mt-4 justify-content-between ">
 
-						<h3>Set your questions</h3>
+						<h5 class="fw-bold">Set your questions</h5>
 
 						<div id="question_container">
 							<div class="each_question_wrapper border shadow-sm rounded p-2" id="inside_question_wrapper" data-q='1'>
 								<!-- question input -->
 								<label for="question" class="fw-bold my-2">question</label>
-								<input type="text" id="question" class="form-control" placeholder="write a question" name="question">
+								<textarea id="question" class="form-control" placeholder="write a question" name="question"></textarea>
 								<!-- select option for answer options -->
 								<select name="selectOption" id="selectOption" class="form-select my-2 w-auto">
 									<option value="checkbox">checkbox</option>
@@ -184,13 +196,15 @@
 						<!-- end of exam questoinnaire -->
 
 						<!-- add question button -->
-						<button type="button" class="btn btn-outline-primary w-auto mt-2" id="addQuestionBtn">
-							<i class="bi bi-plus-circle-fill"></i> Add Question</button>
+						<div class="p-2 d-flex justify-content-between">
+							<button type="button" class="btn btn-outline-primary w-auto mt-2" id="addQuestionBtn">
+								<i class="bi bi-plus-circle-fill"></i> Add Question</button>
 
 
-						<button type="button" class="btn btn-primary w-auto mt-2" id="submit">
-							<i class="bi bi-plus-circle-fill"></i> Create Exam</button>
-
+							<button type="button" class="btn btn-primary w-auto mt-2 " id="submit">
+								<i class="bi bi-box-arrow-in-right align-self-center" style="margin-right: 4px;"></i>Create Exam
+							</button>
+						</div>
 
 
 
@@ -204,7 +218,32 @@
 	</div>
 	</div>
 
-	<script src="./create_exam.js"> </script>
+	<script src="../../js/create_exam.js"> </script>
+	<script>
+	if (localStorage.getItem('dark')) {
+		document.body.classList.add('dark')
+		document
+			.querySelectorAll(".btn")
+			.forEach((el) => el.classList.add("dark"));
+
+		document
+			.querySelectorAll(".nav-link")
+			.forEach((el) => el.classList.add("dark"));
+
+	} else {
+		document.body.classList.remove('dark')
+		document
+			.querySelectorAll(".btn")
+			.forEach((el) => el.classList.remove("dark"));
+
+		document
+			.querySelectorAll(".nav-link")
+			.forEach((el) => el.classList.remove("dark"));
+
+
+
+	}
+	</script>
 
 </body>
 

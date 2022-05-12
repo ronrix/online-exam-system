@@ -15,7 +15,7 @@
 					style="background-color: #fff !important; max-width: 300px !important;">
 					<div class="mb-3">
 						<input name="email" type="email" class="form-control fs-6" aria-describedby="emailHelp"
-							placeholder="Email or Username" required>
+							placeholder="Email or Username" required id="focusEl">
 					</div>
 					<div class="mb-3">
 						<input name="password" type="password" class="form-control fs-6 " placeholder="Password" required>
@@ -62,7 +62,7 @@
 									<input name="email" type="email" class="form-control fs-6" placeholder="Email address" required>
 								</div>
 								<div class="col-12">
-									<input name="password" type="password" class="form-control fs-6" placeholder="New password" required>
+									<input name="password" type="password" class="form-control fs-6" placeholder="Password" required>
 								</div>
 								<div class="col-md-12">
 									<input name="schoolname" type="text" class="form-control fs-6" placeholder="School Name" required>

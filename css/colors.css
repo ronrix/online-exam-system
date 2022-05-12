@@ -1,4 +1,4 @@
-:root {
+body {
     --primary-color: #fff;
     --secondary-color: #2ecc70;
     --tersiary-color: #2aabb2;
@@ -14,6 +14,12 @@
         rgba(0, 234, 196, 1) 0%,
         rgba(0, 199, 229, 1) 100%
     );
+
+    transition: 200ms ease-in-out;
+}
+
+.nav-item .nav-link.dark {
+    color: #fff !important;
 }
 
 .hide-scrollbar::-webkit-scrollbar {

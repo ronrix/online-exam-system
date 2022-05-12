@@ -18,9 +18,8 @@
 	}
 	else {
 
-		$user = $_SESSION['userId'] = $schoolname . ":" . $fullname;
-		$username = explode(":", $user);
+		$_SESSION['userId'] = $email. ":" . $password;
 
 		close_connection();
-		header("Location: ../view/homepage.php?user=" .$user[1]);
+		header("Location: ./signup_redirect.controller.php");
 	}
