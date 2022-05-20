@@ -1,12 +1,21 @@
-<?php 
+<?php
 
-		$httpStatus= $_SERVER["REDIRECT_STATUS"];
+		ini_set('display_errors', 1);
+		ini_set('display_startup_errors', 1);
+		error_reporting(E_ALL);
 
-		$error_title = "You've Already Taken the Exam!";
+		require_once "../../../model/User.php";
 
+
+		$info = $_GET["toei"];
+		$score = $_GET["score"];
+		$verified = getVerifiedWithString($info);
+
+		if(!$verified) {
+			header("Locatin: ../../../error_pages/error.view.php");
+		}
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,7 +23,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?php echo $httpStatus ?></title>
+	<title>Take Exam</title>
 
 	<!-- bootstrap -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -32,17 +41,35 @@
 	<!-- font -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
 
-	<link rel="stylesheet" href="../css/colors.css">
+
+	<style>
+	.title {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-size: 15px;
+	}
+
+	.label_text {
+		font-size: 14px;
+	}
+	</style>
+
 
 </head>
 
-<body class="container d-flex justify-content-center align-items-center bg-primary-gradient" style="height: 100vh">
+<body class="d-flex justify-content-center" style="background-color: #f2f2f2;">
 
-	<div class="text-center d-flex flex-column justify-content-around align-items-center">
-		<i class="bi bi-check-circle text-success" style="font-size: 50px;"></i>
-		<h1 class="fw-bold"> <?php echo $error_title ?> </h1>
+	<div class="text-center">
+		<i class="bi bi-check-circle-fill text-success" style="font-size: 50px;"></i>
+		<?php if($score != 0): ?>
+		<h3>Your score is <?php echo $score; ?></h3>
+		<?php endif; ?>
+		<h3>SUBMITTED!</h3>
+		<p class="font-monospace text-muted">thank you for submitting!</p>
 	</div>
 
 </body>

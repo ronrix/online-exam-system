@@ -80,6 +80,8 @@ submitBtn.addEventListener("click", () => {
         .then(res => {
             if (res.status == "SUCCESS") {
                 alert("SUCCESS!");
+                window.location.reload();
+                window.location.href = "http://localhost/OnlineExamApp/view/app/create_exam.view.php";
             }
         });
 });
@@ -298,7 +300,13 @@ function addOptionElements(el) {
         e.target.parentNode.parentNode.removeChild(e.target.parentNode);
     });
 
+    // if questin container is more than two then append to the second to the last element
+    const getAllQuestions = document.querySelectorAll(".each_question_wrapper");
     // add to the parent question
-    el.parentElement.parentNode.insertBefore(optionWrapper, el.parentElement.parentElement.lastElementChild);
+    if (getAllQuestions.length > 1) {
+        el.parentElement.parentNode.insertBefore(optionWrapper, el.parentElement.parentElement.lastElementChild.previousElementSibling);
+    } else {
+        el.parentElement.parentNode.insertBefore(optionWrapper, el.parentElement.parentElement.lastElementChild);
+    }
 }
 // end option function

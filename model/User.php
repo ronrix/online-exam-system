@@ -9,7 +9,6 @@
 
         try {
             $conn = mysqli_connect($servername, $user, $pass, $db_name);
-            // echo "Connected Successfully!";
         }
         catch(PDOException $e) {
             die("Connection Failed! ". $e->getMessage());
@@ -33,8 +32,7 @@
             $result = mysqli_stmt_get_result($stmt);
         }
         catch(Exception $e) {
-            echo "Something went wrong! ". $e->getMessage() .$e;
-            return "Something Went Wrong!";
+            return 0;
         }
         return $result;
 
@@ -59,7 +57,6 @@
             $stmt->bind_param("sssss", $fullname, $schoolname, $address, $email, $password);
             $stmt->execute();
         } catch (Exception $e) {
-            echo "Something went wrong! ". $e->getMessage() . $e;
             return 0;
         }
         return 1;
@@ -74,10 +71,8 @@
             $stmt = $conn->prepare("INSERT INTO exam(examName, userID, participants, startTime, endTime, serverLink) VALUES(?,?,?,?,?,?)");
             $stmt->bind_param('siisss', $data['examName'], $userId, $data['participants'], $dateTimeNow, $data['exam_time'], $randomString);
             $stmt->execute();
-            echo "done!";
         } catch (Exception $e) {
-            echo "Something went wrong!". $e->getMessage() . $e;
-            die();
+        	return $e->getMessage();
         }
         return mysqli_insert_id($conn);
     }
@@ -89,10 +84,7 @@
             $stmt = $conn->prepare("INSERT INTO examq(examId, q_json) VALUES(?,?)");
             $stmt->bind_param('is', $examId, $newData);
             $stmt->execute();
-            
-            echo "<br>done!";
         }catch(Exception $e) {
-            echo "Something went wrong! ". $e->getMessage() . $e;
             return 0;
         }
     }
@@ -105,7 +97,7 @@
         $data = [];
 
         try {
-            $result = $conn->query("SELECT examID, examName, startTime, endTime FROM exam WHERE userID='$userId'");
+            $result = $conn->query("SELECT examID, examName, startTime, endTime, serverLink FROM exam WHERE userID='$userId'");
 
             if($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) {
@@ -136,7 +128,6 @@
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
         catch(Exception $e) {
-            echo "Something went wrong! ". $e->getMessage() .$e;
             return "Something Went Wrong!";
         }
 
@@ -156,7 +147,6 @@
             mysqli_stmt_execute($stmt);
         }
         catch(Exception $e) {
-            echo "Something went wrong! ". $e->getMessage() .$e;
             return 0;
         }
 
@@ -176,7 +166,6 @@
             mysqli_stmt_execute($stmt);
         }
         catch(Exception $e) {
-            echo "Something went wrong! ". $e->getMessage() .$e;
             return 0;
         }
 
@@ -204,31 +193,19 @@
     }
 
     # participants
-    function addParticipants($name, $pos, $tid, $stringId, $score, $ipaddr) {
+    function addParticipants($name, $pos, $tid, $eid, $score, $ipaddr, $date) {
         $conn = connectToDB();
 
-        # get examID
-        $query1 = "SELECT examID FROM exam WHERE serverLink=?";
-        $stmt1 = mysqli_prepare($conn, $query1);
-        mysqli_stmt_bind_param($stmt1, "s", $stringId);
-
-        mysqli_stmt_execute($stmt1);
-        $result = $stmt1->get_result()->fetch_assoc();
-
-        $id = $result['examID'];
-
-        $query = "INSERT INTO takers(name, position, t_id, e_id, score, ipaddr) VALUES(?,?,?,?,?)";
+        $query = "INSERT INTO takers(name, position, t_id, e_id, score, ipaddr, date) VALUES(?,?,?,?,?,?,?)";
         try {
             $stmt = mysqli_prepare($conn, $query);
-            mysqli_stmt_bind_param($stmt, "ssii", $name, $pos, $tid, $id, $score, $ipaddr);
+            mysqli_stmt_bind_param($stmt, "ssiiis", $name, $pos, $tid, $eid, $score, $ipaddr, $date);
 
             mysqli_stmt_execute($stmt);
-            $result = $stmt->get_result();
-            var_dump($result);
         } catch (EXCEPTION $e) {
             die($e->getMessage());
         }
-        return $id;
+        return 1;
     }
 
     # update exam table for takers, limit only takers on whatever the user set 
@@ -236,7 +213,7 @@
         $conn = connectToDB();
 
         # get exam count 
-        $query1 = "SELECT takers_count FROM exam WHERE examID=?";
+        $query1 = "SELECT participants, takers_count FROM exam WHERE examID=?";
         $stmt1 = mysqli_prepare($conn, $query1);
         mysqli_stmt_bind_param($stmt1, "i", $eid);
 
@@ -244,6 +221,12 @@
         $result = $stmt1->get_result()->fetch_assoc();
 
         $takers_count = $result['takers_count'];
+        $participants = $result['participants'];
+
+        if($takers_count == $participants) {
+            return 3;
+        }
+
         $_count = $takers_count ? $takers_count + $count : $count;
 
         $query = "UPDATE exam SET takers_count=".$_count." WHERE examID=?";
@@ -325,10 +308,10 @@
     function takersLimit($stringId) {
         $conn = connectToDB();
 
-        $query = "SELECT participants, takers_count FROM exam WHERE $stringId=?";
+        $query = "SELECT participants, takers_count FROM exam WHERE serverLink=?";
         try {
             $stmt = mysqli_prepare($conn, $query);
-            mysqli_stmt_bind_param($stmt, "i", $stringId);
+            mysqli_stmt_bind_param($stmt, "s", $stringId);
 
            mysqli_stmt_execute($stmt);
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -394,6 +377,27 @@
 
             mysqli_stmt_execute($stmt);
             $result = $stmt->get_result()->fetch_array();
+        } catch (EXCEPTION $e) {
+            close_connection();
+            return 0;
+            die($e->getMessage());
+        }
+        close_connection();
+
+        return $result;
+    }
+
+    # get answers of exam
+    function getAnswerForExam($eid) {
+        $conn = connectToDB();
+
+        $query = "SELECT q_json FROM examq WHERE examId=?";
+        try {
+            $stmt = mysqli_prepare($conn, $query);
+            mysqli_stmt_bind_param($stmt, "i", $eid);
+
+            mysqli_stmt_execute($stmt);
+            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         } catch (EXCEPTION $e) {
             close_connection();
             return 0;

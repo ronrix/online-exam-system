@@ -211,6 +211,7 @@ $id = 0;
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
+									<div class="serverLink"></div>
 									<div>
 										<p id="modal_startTime">Modal body text goes here.</p>
 									</div>
@@ -219,6 +220,9 @@ $id = 0;
 									</div>
 									<div class="text-end">
 										<a id="modal_editBtn" href="#">edit</a>
+										<button type="button" id="copyLink" class="ml-2 btn btn-outline-primary">
+											<i class="bi bi-clipboard"></i>
+											Copy Link</button>
 									</div>
 								</div>
 								<div class="modal-footer">
@@ -241,6 +245,19 @@ $id = 0;
 	<script src="../../js/examContent.js"></script>
 
 	<script>
+	const copyLinkBtn = document.querySelector("#copyLink");
+	copyLinkBtn.addEventListener("click", (e) => {
+		e.target.firstElementChild.classList = "bi bi-check";
+		const link = document.querySelector(".serverLink").id;
+		navigator.clipboard.writeText("http://localhost/OnlineExamApp/students_view?toei=" + link);
+	})
+
+	document.querySelector(".btn-close").addEventListener("click", () => {
+		if (document.querySelector(".bi-check")) {
+			document.querySelector(".bi-check").classList = "bi bi-clipboard";
+		}
+	})
+
 	// download result as pdf extension
 	const dlPdf = document.querySelector("#downloadResult");
 

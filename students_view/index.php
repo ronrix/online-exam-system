@@ -139,7 +139,7 @@
 				<?php foreach($res->options as $o) : ?>
 				<ul class="list-group">
 					<li class="list-group-item">
-						<input type="checkbox" name="<?php $key . 'checkbox' ?>" value="<?php echo $o ?>"> <?php echo $o; ?>
+						<input type="checkbox" name="checkbox<?php echo $key; ?>[]" value="<?php echo $o ?>"> <?php echo $o; ?>
 					</li>
 				</ul>
 				<?php endforeach; ?>
@@ -147,7 +147,7 @@
 				<?php foreach($res->options as $o) : ?>
 				<ul class="list-group">
 					<li class="list-group-item">
-						<input type="radio" name="<?php $key . 'radio' ?>" value="<?php echo $o ?>"> <?php echo $o; ?>
+						<input type="radio" name="radio<?php echo $key; ?>" value="<?php echo $o ?>"> <?php echo $o; ?>
 					</li>
 				</ul>
 				<?php endforeach; ?>
@@ -157,8 +157,13 @@
 			<?php endforeach; ?>
 
 			<input type="hidden" name="ipaddr" value="<?php echo $ipaddr ?>" />
+			<input type="hidden" name="toei" value="<?php echo $_GET['toei']; ?>" />
+			<input type="hidden" name="eid" value="<?php echo $valid[0]['examID']; ?>" />
+			<input type="hidden" name="t_id" value="<?php echo $valid[0]['userID']; ?>" />
 
-			<input type="submit" name="submit" value="submit" class="btn btn-primary mt-4 fw-bold ">
+			<div class="d-flex align-items-center justify-content-end">
+				<input type="submit" name="submit" value="submit" class="btn btn-primary mt-4 fw-bold ">
+			</div>
 			<p class="mt-2 text-center text-muted">Note: Once you take this exam, you can't retake it again!</p>
 		</form>
 	</div>
