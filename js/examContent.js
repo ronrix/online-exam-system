@@ -39,8 +39,6 @@ exams.forEach(el => {
 
                 Edate = Edate.replaceAll("-", "/");
 
-                console.log(data);
-
                 serverLink.id = data.serverLink;
                 examID.id = data.examID;
 
@@ -71,19 +69,19 @@ exams.forEach(el => {
 const delExam = document.querySelector("#deleteExam");
 
 delExam.addEventListener("click", e => {
+    console.log(e.target.parentElement.parentElement.parentElement.id);
     fetch("http://localhost/OnlineExamApp/controller/deleteExam.controller.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify({ key: e.target.parentElement.parentElement.parentElement.parentElement.id })
+        body: JSON.stringify({ key: e.target.parentElement.parentElement.parentElement.id })
     })
         .then(data => data.json())
         .then(res => {
             if (res.status === "SUCCESS!") {
                 alert("Successfully deleted!");
-                window.location.reload();
             }
         });
 });
