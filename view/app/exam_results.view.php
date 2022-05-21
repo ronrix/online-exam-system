@@ -212,6 +212,7 @@ $id = 0;
 								</div>
 								<div class="modal-body">
 									<div class="serverLink"></div>
+									<div class="examID"></div>
 									<div>
 										<p id="modal_startTime">Modal body text goes here.</p>
 									</div>
@@ -249,7 +250,8 @@ $id = 0;
 	copyLinkBtn.addEventListener("click", (e) => {
 		e.target.firstElementChild.classList = "bi bi-check";
 		const link = document.querySelector(".serverLink").id;
-		navigator.clipboard.writeText("http://localhost/OnlineExamApp/students_view?toei=" + link);
+		const id = document.querySelector(".examID").id;
+		navigator.clipboard.writeText("http://localhost/OnlineExamApp/students_view?toei=" + link + "&eid=" + id);
 	})
 
 	document.querySelector(".btn-close").addEventListener("click", () => {

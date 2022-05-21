@@ -367,13 +367,13 @@
     }
 
     # get takers via ipaddr
-    function getTakerViaIPAddr($ip) {
+    function getTakerViaIPAddr($ip, $eid) {
         $conn = connectToDB();
 
-        $query = "SELECT COUNT(*) FROM takers WHERE ipaddr=?";
+        $query = "SELECT COUNT(*) FROM takers WHERE ipaddr=? and e_id=?";
         try {
             $stmt = mysqli_prepare($conn, $query);
-            mysqli_stmt_bind_param($stmt, "s", $ip);
+            mysqli_stmt_bind_param($stmt, "si", $ip, $eid);
 
             mysqli_stmt_execute($stmt);
             $result = $stmt->get_result()->fetch_array();

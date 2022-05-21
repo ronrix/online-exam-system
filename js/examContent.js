@@ -9,6 +9,7 @@ const modal_startTime = document.querySelector("#modal_startTime");
 const modal_endTime = document.querySelector("#modal_endTime");
 const modal_editBtn = document.querySelector("#modal_editBtn");
 const serverLink = document.querySelector(".serverLink");
+const examID = document.querySelector(".examID");
 
 exams.forEach(el => {
     el.addEventListener("click", e => {
@@ -41,6 +42,7 @@ exams.forEach(el => {
                 console.log(data);
 
                 serverLink.id = data.serverLink;
+                examID.id = data.examID;
 
                 // check if date was already expired
                 if (new Date(Edate).getTime() < new Date().getTime()) {

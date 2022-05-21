@@ -23,19 +23,20 @@
 			return $ip;  
 		}  
 
+		# get information from the database based on the queries or url parameters
+
+		$randomStringId =  $_GET["toei"] ? $_GET['toei'] : "";
+		$eid = $_GET['eid'];
+
+
 		$ipaddr = getIPAddress();
 
 		# check if ipaddr has already store, then prevent them from taking the exam again
-		$takersIp = getTakerViaIPAddr($ipaddr);
+		$takersIp = getTakerViaIPAddr($ipaddr, $eid);
 
 		if($takersIp[0]) {
 			header("Location: ../error_pages/exam_viewed.view.php");
 		}
-
-		# get information from the database based on the queries or url parameters
-
-		$randomStringId =  $_GET["toei"] ? $_GET['toei'] : "";
-		$teachers_id = explode(":", $_GET['toei'])[1];
 
 		$valid = randomStringID($randomStringId);
 		if(!$valid) {
@@ -161,8 +162,9 @@
 			<input type="hidden" name="eid" value="<?php echo $valid[0]['examID']; ?>" />
 			<input type="hidden" name="t_id" value="<?php echo $valid[0]['userID']; ?>" />
 
-			<div class="d-flex align-items-center justify-content-end">
-				<input type="submit" name="submit" value="submit" class="btn btn-primary mt-4 fw-bold ">
+			<div class="d-flex align-items-center justify-content-end flex-column">
+				<input type="submit" name="submit" value="submit"
+					class="text-uppercase btn btn-primary mt-4 fw-bold align-self-sm-stretch align-self-md-end">
 			</div>
 			<p class="mt-2 text-center text-muted">Note: Once you take this exam, you can't retake it again!</p>
 		</form>
