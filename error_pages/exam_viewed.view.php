@@ -2,7 +2,15 @@
 
 		$httpStatus= $_SERVER["REDIRECT_STATUS"];
 
+		$status = $_GET['stat'] || 0;
+
+		if($status == 410) {
+			$error_title = "Exam was already Expired!";
+		}
+		else {
 		$error_title = "You've Already Taken the Exam!";
+		}
+
 
 
 ?>
@@ -41,7 +49,11 @@
 <body class="container d-flex justify-content-center align-items-center bg-primary-gradient" style="height: 100vh">
 
 	<div class="text-center d-flex flex-column justify-content-around align-items-center">
+		<?php	if($status == 410)  : ?>
+		<i class="bi bi-check-circle text-danger" style="font-size: 50px;"></i>
+		<?php else: ?>
 		<i class="bi bi-check-circle text-success" style="font-size: 50px;"></i>
+		<?php endif; ?>
 		<h1 class="fw-bold"> <?php echo $error_title ?> </h1>
 	</div>
 

@@ -181,7 +181,7 @@ $id = 0;
 									<div class="fw-bold"><?php echo $d['examName']; ?></div>
 								</div>
 								<span
-									class="badge bg-primary rounded-pill"><?php echo dueDateTime($d['endTime']) ? "ends on ".  dueDateTime($d['endTime']) : 'expired'; ?></span>
+									class="badge <?php echo dueDateTime($d['endTime']) ? 'bg-primary' : 'bg-danger'  ?> rounded-pill"><?php echo dueDateTime($d['endTime']) ? "not yet started" : 'expired'; ?></span>
 							</li>
 							<?php else: ?>
 							<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-action exam"
@@ -190,7 +190,7 @@ $id = 0;
 									<div class="fw-bold"><?php echo $d['examName']; ?></div>
 								</div>
 								<span
-									class="badge bg-primary rounded-pill"><?php echo dueDateTime($d['endTime']) ? "ends on ". dueDateTime($d['endTime']) : 'expired'; ?></span>
+									class="badge <?php echo dueDateTime($d['endTime']) ? "bg-primary" : 'bg-danger'  ?> rounded-pill"><?php echo dueDateTime($d['endTime']) ? "not yet started" : 'expired'; ?></span>
 							</li>
 							<?php endif; ?>
 
@@ -246,6 +246,7 @@ $id = 0;
 	<script src="../../js/examContent.js"></script>
 
 	<script>
+	// copy link
 	const copyLinkBtn = document.querySelector("#copyLink");
 	copyLinkBtn.addEventListener("click", (e) => {
 		e.target.firstElementChild.classList = "bi bi-check";

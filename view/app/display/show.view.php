@@ -128,9 +128,9 @@ $not_passed = 0;
 
 			<div class="col h-100 bg-light" style="overflow-y: scroll">
 				<?php foreach($exams as $key => $que): ?>
-				<div><?php echo $key + 1 . ". " . json_decode($que['q_json'], true)['q']; ?> </div>
+				<div><?php echo $key + 1 . ". " . json_decode($que['q_json'], true)[0]['q']; ?> </div>
 				<ul>
-					<?php foreach(json_decode($que['q_json'], true)['options'] as $options): ?>
+					<?php foreach(json_decode($que['q_json'], true)[0]['options'] as $options): ?>
 					<li><?php echo $options ?></li>
 					<?php endforeach; ?>
 				</ul>

@@ -28,6 +28,14 @@
 		$randomStringId =  $_GET["toei"] ? $_GET['toei'] : "";
 		$eid = $_GET['eid'];
 
+		# check if expired
+		$expired = checkExpired($eid);
+
+		$expiredStatus = 0;
+
+		if($expired[0]['endTime'] < date("Y-m-d h-i:sa")) {
+			header("Location: ../error_pages/exam_viewed.view.php?stat=410");
+		} 
 
 		$ipaddr = getIPAddress();
 

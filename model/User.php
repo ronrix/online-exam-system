@@ -407,3 +407,24 @@
 
         return $result;
     }
+
+    # check if exam is already expired, students view
+    function checkExpired($eid) {
+        $conn = connectToDB();
+
+        $query = "SELECT endTime FROM exam WHERE examID=?";
+        try {
+            $stmt = mysqli_prepare($conn, $query);
+            mysqli_stmt_bind_param($stmt, "i", $eid);
+
+            mysqli_stmt_execute($stmt);
+            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        } catch (EXCEPTION $e) {
+            close_connection();
+            return 0;
+            die($e->getMessage());
+        }
+        close_connection();
+
+        return $result;
+    }

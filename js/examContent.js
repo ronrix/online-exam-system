@@ -69,7 +69,6 @@ exams.forEach(el => {
 const delExam = document.querySelector("#deleteExam");
 
 delExam.addEventListener("click", e => {
-    console.log(e.target.parentElement.parentElement.parentElement.id);
     fetch("http://localhost/OnlineExamApp/controller/deleteExam.controller.php", {
         method: "POST",
         headers: {
@@ -80,8 +79,6 @@ delExam.addEventListener("click", e => {
     })
         .then(data => data.json())
         .then(res => {
-            if (res.status === "SUCCESS!") {
-                alert("Successfully deleted!");
-            }
+            window.location.reload();
         });
 });
