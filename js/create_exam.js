@@ -80,8 +80,10 @@ submitBtn.addEventListener("click", () => {
         .then(res => {
             if (res.status == "SUCCESS") {
                 alert("SUCCESS!");
+                window.onbeforeunload = function () {
+                    return null;
+                };
                 window.location.reload();
-                window.location.href = "http://localhost/OnlineExamApp/view/app/create_exam.view.php";
             }
         });
 });

@@ -17,7 +17,7 @@ body.dark {
     color: #fff !important;
 }
 
-.btn.dark {
+.btn[name="logout"].dark {
     color: #fff !important;
 }
 

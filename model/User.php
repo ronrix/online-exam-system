@@ -65,13 +65,12 @@
     # insert exam details 
     function insertExamDetails($conn, $data, $userId, $randomString) {
 
-        $dateTimeNow = date("d-m-y h:i:s");
-
         try {
-            $stmt = $conn->prepare("INSERT INTO exam(examName, userID, participants, startTime, endTime, serverLink) VALUES(?,?,?,?,?,?)");
-            $stmt->bind_param('siisss', $data['examName'], $userId, $data['participants'], $dateTimeNow, $data['exam_time'], $randomString);
+            $stmt = $conn->prepare("INSERT INTO exam(examName, userID, participants, endTime, serverLink) VALUES(?,?,?,?,?)");
+            $stmt->bind_param('siiss', $data['examName'], $userId, $data['participants'], $data['exam_time'], $randomString);
             $stmt->execute();
         } catch (Exception $e) {
+            echo $e->getMessage();
         	return $e->getMessage();
         }
         return mysqli_insert_id($conn);
@@ -97,7 +96,7 @@
         $data = [];
 
         try {
-            $result = $conn->query("SELECT examID, examName, startTime, endTime, serverLink FROM exam WHERE userID='$userId'");
+            $result = $conn->query("SELECT examID, examName, status, startTime, endTime, serverLink FROM exam WHERE userID='$userId'");
 
             if($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) {
@@ -427,4 +426,27 @@
         close_connection();
 
         return $result;
+    }
+
+    # start the exam
+    function startExam($eid) {
+        $conn = connectToDB();
+
+        $now = date("Y-m-d h:i:sa");
+        $started = 1;
+
+        $query = "UPDATE exam SET startTime = ?, status = ? WHERE examID=35";
+        try {
+            $stmt = mysqli_prepare($conn, $query);
+            mysqli_stmt_bind_param($stmt, "si", $now, $started);
+
+            mysqli_stmt_execute($stmt);
+        } catch (EXCEPTION $e) {
+            close_connection();
+            return 0;
+            die($e->getMessage());
+        }
+        close_connection();
+
+        return 1;
     }

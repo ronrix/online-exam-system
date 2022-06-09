@@ -30,22 +30,34 @@ $userId = explode(":", $_SESSION['userId'])[0];
 $details = getExamDetailsForExam($userId);
 
 # handle the due date/time of the exam
-function dueDateTime($due)
+# status code
+# 0 - not started
+# -1 - on progress
+# 1 - ended
+function dueDateTime($due, $status)
 {
-
-	$dueDate = explode(' ', $due)[0];
 	$now = date("Y-m-d h:i:sa");
 
-	if($due < $now) {
-		return 0;
+	# check if exam was already started with duedatetime
+
+	# if exam has ended
+	if($now > $due) {
+		return 1;
+	}
+	else {
+		# not started
+		if(!$status) {
+			return 0;
+		}
+		else {
+			# on progress
+			if($due < $now) {
+				return -1;
+			}
+		}
 	}
 
-	$created_date = date_create($dueDate);
-	$formated_date = date_format($created_date, 'D');
-
-
-	return $formated_date;
-}# index for lists style
+}
 
 $id = 0;
 
@@ -57,7 +69,7 @@ $id = 0;
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Online Exam | Results</title>
+	<title>Online Exam | Manage Exams</title>
 
 	<!-- bootstrap -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -169,7 +181,7 @@ $id = 0;
 
 					<!-- dashboard cards recent results-->
 					<div class="row m-4 justify-content-between">
-						<h5 class="lead text-uppercase fw-bold m-0 my-2 p-0">Lists of Exam</h5>
+						<h5 class="lead text-uppercase fw-bold m-0 my-2 p-0">Lists of Exams</h5>
 						<ol class="list-group list-group-numbered">
 							<?php foreach ($details as $key => $d) : ?>
 							<?php if($id % 2 != 0): ?>
@@ -181,7 +193,7 @@ $id = 0;
 									<div class="fw-bold"><?php echo $d['examName']; ?></div>
 								</div>
 								<span
-									class="badge <?php echo dueDateTime($d['endTime']) ? 'bg-primary' : 'bg-danger'  ?> rounded-pill"><?php echo dueDateTime($d['endTime']) ? "not yet started" : 'expired'; ?></span>
+									class="badge <?php echo dueDateTime($d['endTime'], $d['status']) == -1 ? 'bg-primary' : (dueDateTime($d['endTime'], $d['status']) == 1 ? 'bg-danger' : 'bg-warning text-dark')  ?> rounded-pill"><?php echo dueDateTime($d['endTime'], $d['status']) == 1 ? "ended" :  (dueDateTime($d['endTime'], $d['status']) == -1 ? "on progress" : 'not started'); ?></span>
 							</li>
 							<?php else: ?>
 							<li class="list-group-item d-flex justify-content-between align-items-start list-group-item-action exam"
@@ -190,7 +202,7 @@ $id = 0;
 									<div class="fw-bold"><?php echo $d['examName']; ?></div>
 								</div>
 								<span
-									class="badge <?php echo dueDateTime($d['endTime']) ? "bg-primary" : 'bg-danger'  ?> rounded-pill"><?php echo dueDateTime($d['endTime']) ? "not yet started" : 'expired'; ?></span>
+									class="badge <?php echo dueDateTime($d['endTime'], $d['status']) == -1 ? 'bg-primary' : (dueDateTime($d['endTime'], $d['status']) == 1 ? 'bg-danger' : 'bg-warning text-dark')  ?> rounded-pill"><?php echo dueDateTime($d['endTime'], $d['status']) == 1 ? "ended" :  (dueDateTime($d['endTime'], $d['status']) == -1 ? "on progress" : 'not started'); ?></span>
 							</li>
 							<?php endif; ?>
 
