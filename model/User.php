@@ -192,13 +192,13 @@
     }
 
     # participants
-    function addParticipants($name, $pos, $tid, $eid, $score, $ipaddr, $date) {
+    function addParticipants($name, $pos, $tid, $eid, $score, $ipaddr) {
         $conn = connectToDB();
 
-        $query = "INSERT INTO takers(name, position, t_id, e_id, score, ipaddr, date) VALUES(?,?,?,?,?,?,?)";
+        $query = "INSERT INTO takers(name, position, t_id, e_id, score, ipaddr, date) VALUES(?,?,?,?,?,?,NOW())";
         try {
             $stmt = mysqli_prepare($conn, $query);
-            mysqli_stmt_bind_param($stmt, "ssiiis", $name, $pos, $tid, $eid, $score, $ipaddr, $date);
+            mysqli_stmt_bind_param($stmt, "ssiiis", $name, $pos, $tid, $eid, $score, $ipaddr);
 
             mysqli_stmt_execute($stmt);
         } catch (EXCEPTION $e) {
@@ -432,15 +432,34 @@
     function startExam($eid) {
         $conn = connectToDB();
 
-        $now = date("Y-m-d h:i:sa");
         $started = 1;
 
-        $query = "UPDATE exam SET startTime = ?, status = ? WHERE examID=35";
+        $query = "UPDATE exam SET startTime=NOW(), status=? WHERE examID=?";
         try {
-            $stmt = mysqli_prepare($conn, $query);
-            mysqli_stmt_bind_param($stmt, "si", $now, $started);
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ii", $started, $eid);
 
-            mysqli_stmt_execute($stmt);
+            $stmt->execute();
+        } catch (EXCEPTION $e) {
+            close_connection();
+            return 0;
+            die($e->getMessage());
+        }
+        close_connection();
+
+        return 1;
+    }
+
+    # end the exam
+    function endExam($eid) {
+        $conn = connectToDB();
+
+        $query = "UPDATE exam SET endTime=NOW() WHERE examID=?";
+        try {
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $eid);
+
+            $stmt->execute();
         } catch (EXCEPTION $e) {
             close_connection();
             return 0;

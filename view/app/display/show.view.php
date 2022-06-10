@@ -33,7 +33,7 @@ $results = getTakers($examID, $userId);
 # get exam and render to the dom
 $exams = getExamQuestions($examID);
 
-$totalExamQ = count($exams[0]);
+$totalExamQ = count($exams[0]) > 2 ?? count($exams[0]);
 $passingGrade = 0.7 * $totalExamQ;
 
 $questions = $exams;

@@ -59,7 +59,7 @@
 		}
 
 		# add participants along with score
-		addParticipants($name, $position, $_POST['t_id'], $eid, $score, $ipaddr, date("Y-m-d h:i:sa"));
+		addParticipants($name, $position, $_POST['t_id'], $eid, $score, $ipaddr);
 		
 		# add participant to the exam details table, tracking participants 
 		$limitResults = trackTakersToLimitExaminers(1, $eid);

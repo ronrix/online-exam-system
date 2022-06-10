@@ -65,7 +65,7 @@
 
 	<div class="text-center">
 		<i class="bi bi-check-circle-fill text-success" style="font-size: 50px;"></i>
-		<?php if($score != 0): ?>
+		<?php if($score != null): ?>
 		<h3>Your score is <?php echo $score; ?></h3>
 		<?php endif; ?>
 		<h3>SUBMITTED!</h3>

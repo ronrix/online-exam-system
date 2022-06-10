@@ -36,12 +36,12 @@ $details = getExamDetailsForExam($userId);
 # 1 - ended
 function dueDateTime($due, $status)
 {
-	$now = date("Y-m-d h:i:sa");
+	$now = date("Y-m-d H:i:sa");
 
 	# check if exam was already started with duedatetime
 
 	# if exam has ended
-	if($now > $due) {
+	if($due <= $now) {
 		return 1;
 	}
 	else {
@@ -51,9 +51,7 @@ function dueDateTime($due, $status)
 		}
 		else {
 			# on progress
-			if($due < $now) {
-				return -1;
-			}
+			return -1;
 		}
 	}
 

@@ -44,26 +44,92 @@ exams.forEach(el => {
                 serverLink.id = data.serverLink;
                 examID.id = data.examID;
 
+                // render contents about the exam
+                modalName.textContent = data.examName;
+                modalWrapper.id = data.examID;
+                modal_editBtn.style.display = "none";
+                modal_endTime.textContent = "";
+                modal_endTime.innerHTML = `<a target="_blank" href="./display/show.view.php?eid=${data.examID}&en=${data.examName}">show result</a>`;
+
                 // check if date was already expired
                 if (new Date(Edate).getTime() < new Date().getTime()) {
-                    modalName.textContent = data.examName;
-                    modalWrapper.id = data.examID;
-                    modal_editBtn.style.display = "none";
                     modal_startTime.textContent = `Ended on ${
                         months[Emonth.toString()[0] == "0" ? Emonth.toString()[1] - 1 : months[Emonth - 1]]
                     } ${Eday}th`;
-                    modal_endTime.textContent = "";
-                    modal_endTime.innerHTML = `<a target="_blank" href="./display/show.view.php?eid=${data.examID}&en=${data.examName}">show result</a>`;
-                    document.querySelector("#downloadResult").style.display = "block";
+                    if (document.querySelector("#downloadResult")) {
+                        document.querySelector("#downloadResult").style.display = "block";
+                    }
 
-                    modalFooter.removeChild(modalFooter.lastChild);
+                    // remove start now on expired
+                    if (modalFooter.lastElementChild.textContent == "Start Now") {
+                        modalFooter.removeChild(modalFooter.lastChild);
+                    }
+
+                    // remove end now on expired
+                    modalFooter.childNodes.forEach(el => {
+                        if (el.textContent == "End Now") {
+                            modalFooter.removeChild(el);
+                        }
+                    });
+
                     return;
                 } else {
                     modalName.textContent = data.examName;
                     modalWrapper.id = data.examID;
-                    modal_startTime.textContent = `Start Time: ${Sdate ? `${Syear} ${Smonth} ${Sday}` : "Not yet started!"}`;
-                    modal_endTime.textContent = `End Time: ${Eyear} ${Emonth} ${Eday}`;
-                    document.querySelector("#downloadResult").style.display = "none";
+                    modal_startTime.innerHTML = `<p>Start Time: ${Sdate ? `${Syear} ${Smonth} ${Sday}` : "Not yet started!"}</p>
+                    <p>End Time: ${Eyear} ${Emonth} ${Eday}</p>`;
+
+                    // remove start btn if status is 1 or started
+                    if (modalFooter.lastElementChild.textContent == "Download Result") {
+                        document.querySelector("#downloadResult").style.display = "none";
+                    }
+                    if (data.status == 1) {
+                        // add end btn
+                        const endBtn = document.createElement("button");
+                        endBtn.type = "button";
+                        endBtn.classList = "btn btn-warning";
+                        endBtn.textContent = "End Now";
+
+                        endBtn.addEventListener("click", () => {
+                            // start exam send to the backend controller
+                            fetch("http://localhost/OnlineExamApp/controller/end_exam.controller.php", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                                body: JSON.stringify({ eid: parseInt(examID.id) })
+                            })
+                                .then(res => res.json())
+                                .then(data => {
+                                    console.log(data);
+                                    if (data.status == "SUCCESS") {
+                                        window.location.reload();
+                                    }
+                                });
+                        });
+
+                        // remove start now on progress
+                        modalFooter.childNodes.forEach(el => {
+                            if (el.textContent == "Start Now") {
+                                modalFooter.removeChild(el);
+                            }
+                        });
+
+                        modalFooter.appendChild(endBtn);
+                        return;
+                    }
+
+                    // remove end now on progress
+                    modalFooter.childNodes.forEach(el => {
+                        if (el.textContent == "End Now") {
+                            modalFooter.removeChild(el);
+                        }
+                    });
+
+                    if (document.querySelector("#downloadResult")) {
+                        document.querySelector("#downloadResult").style.display = "none";
+                    }
 
                     // check if exam has started
                     // add start button if not
@@ -82,13 +148,13 @@ exams.forEach(el => {
                                         "Content-Type": "application/json"
                                     },
                                     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                                    body: JSON.stringify({ eid: examID.id })
+                                    body: JSON.stringify({ eid: parseInt(examID.id) })
                                 })
                                     .then(res => res.json())
                                     .then(data => {
                                         console.log(data);
                                         if (data.status == "SUCCESS") {
-                                            // window.location.reload();
+                                            window.location.reload();
                                         }
                                     });
                             });
