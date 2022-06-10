@@ -22,39 +22,27 @@
     }
 
 		$details = getExamDetailsForExam($user[0]);
-		function dueDateTime($due)
-		{
 
-			$dueDate = explode(' ', $due)[0];
-			$now = date("Y-m-d");
+		$on_going_exams = [];
+		$ended_exams = [];
 
-			if($dueDate < $now) {
-				return 0;
-			}
+		function ongoing_exams($arr){
+			return date("Y-m-d H:i:sa") <= $arr['endTime'];
+		}
 
-			$created_date = date_create($dueDate);
-			$formated_date = date_format($created_date, 'D');
-
-			return $formated_date;
+		function ended_exams($arr){
+			return date("Y-m-d H:i:sa") > $arr['endTime'];
 		}
 
 
-		# get todays exam and render to the recent exam element
-		$recentExam = [];
-		$currentExam = [];
-		foreach($details as $key => $d) {
-				$dateNow = date('Y-m-d h:i:s');
+		// filter ongoing exmas
+		$on_going_exams = array_filter($details, "ongoing_exams");
 
-				$d = array_merge($d, ["userID" => $user[0]]);
+		// filter ended exmas
+		$ended_exams= array_filter($details, "ended_exams");
 
-				if ($d['endTime'] < $dateNow) {
-					$recentExam = array_merge($recentExam, [$d]);
-				}
-				else{
-					$currentExam = array_merge($currentExam, [$d]);
-				}
-		}
-		
+		$stringed_nums = ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -180,83 +168,93 @@
 					</div>
 					<!-- end of header -->
 
-					<!-- dashboard cards recent results-->
+					<!-- dashboard cards results-->
 					<div class="row m-4 justify-content-between">
 
-						<!-- current exams -->
+						<!-- ongoing exams -->
 						<div class="lead fw-bold">Ongoing Exams</div>
 
-						<div class="accordion" id="accordionExample">
-							<?php if($currentExam): ?>
-
-							<?php foreach($currentExam as $key => $c) : ?>
-							<?php if ($key == 2) break; ?>
-
+						<?php foreach($on_going_exams as $oge) : ?>
+						<div class="accordion accordion-flush" id="accordionFlushExample">
 							<div class="accordion-item">
-								<h2 class="accordion-header" id="headingOne">
-									<button class="accordion-button " type="button" data-bs-toggle="collapse"
-										data-bs-target="#<?php echo $key == 0 ? "collapseOne" : $key == 1 ? "collapseTwo" : "collapseThree" ?>"
-										aria-expanded="true"
-										aria-controls="<?php echo $key == 0 ? "collapseOne" : $key == 1 ? "collapseTwo" : "collapseThree" ?>">
-										<div class="d-flex justify-content-between w-100">
-											<p class="m-0 text-capitalize fw-bold"><?php echo $c['examName']; ?></p>
-										</div>
+								<h2 class="accordion-header" id="flush-headingOne">
+									<button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse"
+										data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+										<?php echo $oge['examName']; ?>
 									</button>
-								</h2>
-								<div
-									id="panelStaysOpen-<?php echo $key == 0 ? "collapseOne" : $key == 1 ? "collapseTwo" : "collapseThree" ?>"
-									class="accordion-collapse collapse show" aria-labelledby="headingOne"
-									data-bs-parent="#accordionExample">
-									<div class="accordion-body">
-										<p class="m-0 mr-5">
-											<?php echo "ends on ". date_format(date_create(explode(" ", $c['endTime'])[0]), "M d"); ?> </p>
+									<div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+										data-bs-parent="#accordionFlushExample">
+										<div class="accordion-body text-dark">
+											<?php $d = date_create($oge['endTime']); ?>
+											<p class="text-dark fs-6">This exam ends on <?php echo date_format($d, 'Y M d'); ?> @
+												<?php echo date_format($d, 'h:i:sa'); ?></p>
+										</div>
 									</div>
-								</div>
+								</h2>
 							</div>
 
 							<?php endforeach; ?>
-							<?php else: ?>
-							<div style="cursor: pointer;" class="list-group-item list-group-item-action d-flex" aria-current="true">
-								<p style="margin-right: 10px !important;">No exam yet!</p>
-								<p><a href="./app/create_exam.view.php">create now?</a></p>
-							</div>
-							<?php endif; ?>
 
+							<!-- end of ongoing exams -->
+
+							<!-- ended exams -->
+							<div class="mt-4 lead fw-bold">Ended Exams</div>
+
+							<?php foreach($ended_exams as $key => $ee) : ?>
+							<div class="accordion" id="accordionExample1">
+								<div class="accordion-item">
+									<h2 class="accordion-header" id="heading<?php echo $stringed_nums[$key]; ?>">
+										<button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse"
+											data-bs-target="#collapse<?php echo $stringed_nums[$key]; ?>" aria-expanded="false"
+											aria-controls="collapse<?php echo $stringed_nums[$key]; ?>">
+											<?php echo $ee['examName']; ?>
+										</button>
+									</h2>
+									<div id="collapse<?php echo $stringed_nums[$key]; ?>" class="accordion-collapse collapse show"
+										aria-labelledby="heading<?php echo $stringed_nums[$key]; ?>" data-bs-parent="#accordionExample">
+										<div class="accordion-body text-dark">
+											<?php $d = date_create($ee['endTime']); ?>
+											<p>This exam ends on <?php echo date_format($d, 'Y M d'); ?> @
+												<?php echo date_format($d, 'h:i:sa'); ?></p>
+										</div>
+									</div>
+								</div>
+							</div>
+							<?php endforeach; ?>
+
+							<!-- end of ended exams -->
 						</div>
 
-						<!-- end of results -->
 					</div>
 
 				</div>
-
 			</div>
-		</div>
 
-		<script>
-		// theme mode
-		if (localStorage.getItem('dark')) {
-			document.body.classList.add('dark')
-			document
-				.querySelectorAll(".btn")
-				.forEach((el) => el.classList.add("dark"));
+			<script>
+			// theme mode
+			if (localStorage.getItem('dark')) {
+				document.body.classList.add('dark')
+				document
+					.querySelectorAll(".btn")
+					.forEach((el) => el.classList.add("dark"));
 
-			document
-				.querySelectorAll(".nav-link")
-				.forEach((el) => el.classList.add("dark"));
+				document
+					.querySelectorAll(".nav-link")
+					.forEach((el) => el.classList.add("dark"));
 
-		} else {
-			document.body.classList.remove('dark')
+			} else {
+				document.body.classList.remove('dark')
 
-			document
-				.querySelectorAll(".btn")
-				.forEach((el) => el.classList.remove("dark"));
+				document
+					.querySelectorAll(".btn")
+					.forEach((el) => el.classList.remove("dark"));
 
-			document
-				.querySelectorAll(".nav-link")
-				.forEach((el) => el.classList.remove("dark"));
+				document
+					.querySelectorAll(".nav-link")
+					.forEach((el) => el.classList.remove("dark"));
 
-		}
-		</script>
+			}
+			</script>
 
 </body>
 
