@@ -174,15 +174,17 @@
 						<!-- ongoing exams -->
 						<div class="lead fw-bold">Ongoing Exams</div>
 
-						<?php foreach($on_going_exams as $oge) : ?>
 						<div class="accordion accordion-flush" id="accordionFlushExample">
+							<?php foreach($on_going_exams as $key => $oge) : ?>
 							<div class="accordion-item">
-								<h2 class="accordion-header" id="flush-headingOne">
+								<h2 class="accordion-header" id="flush-heading<?php echo $stringed_nums[$key]; ?>">
 									<button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse"
-										data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+										data-bs-target="#flush-collapse<?php echo $stringed_nums[$key]; ?>" aria-expanded="false"
+										aria-controls="flush-collapse<?php echo $stringed_nums[$key]; ?>">
 										<?php echo $oge['examName']; ?>
 									</button>
-									<div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+									<div id="flush-collapse<?php echo $stringed_nums[$key]; ?>" class="accordion-collapse collapse"
+										aria-labelledby="flush-heading<?php echo $stringed_nums[$key]; ?>"
 										data-bs-parent="#accordionFlushExample">
 										<div class="accordion-body text-dark">
 											<?php $d = date_create($oge['endTime']); ?>
@@ -191,70 +193,72 @@
 										</div>
 									</div>
 								</h2>
+								<?php endforeach; ?>
 							</div>
+						</div>
 
-							<?php endforeach; ?>
 
-							<!-- end of ongoing exams -->
+						<!-- end of ongoing exams -->
 
-							<!-- ended exams -->
-							<div class="mt-4 lead fw-bold">Ended Exams</div>
+						<!-- ended exams -->
+						<div class="mt-4 lead fw-bold">Ended Exams</div>
 
+						<div class="accordion" id="accordionExample">
 							<?php foreach($ended_exams as $key => $ee) : ?>
-							<div class="accordion" id="accordionExample1">
-								<div class="accordion-item">
-									<h2 class="accordion-header" id="heading<?php echo $stringed_nums[$key]; ?>">
-										<button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse"
-											data-bs-target="#collapse<?php echo $stringed_nums[$key]; ?>" aria-expanded="false"
-											aria-controls="collapse<?php echo $stringed_nums[$key]; ?>">
-											<?php echo $ee['examName']; ?>
-										</button>
-									</h2>
-									<div id="collapse<?php echo $stringed_nums[$key]; ?>" class="accordion-collapse collapse show"
-										aria-labelledby="heading<?php echo $stringed_nums[$key]; ?>" data-bs-parent="#accordionExample">
-										<div class="accordion-body text-dark">
-											<?php $d = date_create($ee['endTime']); ?>
-											<p>This exam ends on <?php echo date_format($d, 'Y M d'); ?> @
-												<?php echo date_format($d, 'h:i:sa'); ?></p>
-										</div>
+							<div class="accordion-item" aria-expanded="false">
+								<h2 class="accordion-header" id="heading<?php echo $stringed_nums[$key]; ?>">
+									<button class="accordion-button <?php echo $key == 0 ? "" : "collapsed"; ?> fw-bold" type="button"
+										data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $stringed_nums[$key]; ?>"
+										aria-expanded="false" aria-controls="collapse<?php echo $stringed_nums[$key]; ?>">
+										<?php echo $ee['examName']; ?>
+									</button>
+								</h2>
+								<div id="collapse<?php echo $stringed_nums[$key]; ?>"
+									class="accordion-collapse collapse <?php echo $key == 0 ? "show" : ""; ?> "
+									aria-labelledby="heading<?php echo $stringed_nums[$key]; ?>" data-bs-parent="#accordionExample">
+									<div class="accordion-body text-dark">
+										<?php $d = date_create($ee['endTime']); ?>
+										<p>This exam ends on <?php echo date_format($d, 'Y M d'); ?> @
+											<?php echo date_format($d, 'h:i:sa'); ?></p>
 									</div>
 								</div>
 							</div>
 							<?php endforeach; ?>
-
-							<!-- end of ended exams -->
 						</div>
 
+						<!-- end of ended exams -->
 					</div>
 
 				</div>
+
 			</div>
+		</div>
 
-			<script>
-			// theme mode
-			if (localStorage.getItem('dark')) {
-				document.body.classList.add('dark')
-				document
-					.querySelectorAll(".btn")
-					.forEach((el) => el.classList.add("dark"));
+		<script>
+		// theme mode
+		if (localStorage.getItem('dark')) {
+			document.body.classList.add('dark')
+			document
+				.querySelectorAll(".btn")
+				.forEach((el) => el.classList.add("dark"));
 
-				document
-					.querySelectorAll(".nav-link")
-					.forEach((el) => el.classList.add("dark"));
+			document
+				.querySelectorAll(".nav-link")
+				.forEach((el) => el.classList.add("dark"));
 
-			} else {
-				document.body.classList.remove('dark')
+		} else {
+			document.body.classList.remove('dark')
 
-				document
-					.querySelectorAll(".btn")
-					.forEach((el) => el.classList.remove("dark"));
+			document
+				.querySelectorAll(".btn")
+				.forEach((el) => el.classList.remove("dark"));
 
-				document
-					.querySelectorAll(".nav-link")
-					.forEach((el) => el.classList.remove("dark"));
+			document
+				.querySelectorAll(".nav-link")
+				.forEach((el) => el.classList.remove("dark"));
 
-			}
-			</script>
+		}
+		</script>
 
 </body>
 
